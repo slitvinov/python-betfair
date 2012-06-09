@@ -21,7 +21,7 @@ fi
 awk '/platformConfig = /{exit} 1' ${WORK}/comp  | \
     grep 'data-eventid='  | \
     sed -e 's/\"//g' -e 's/data-eventid=//g' | \
-    sort | uniq > ${WORK}/event.ids
+    awk '!s[$0]++'  > ${WORK}/event.ids
 
 # run jparse.py with all IDs in event.ids
 xargs < ${WORK}/event.ids -n 1 ./jparse.py --id
