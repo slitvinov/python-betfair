@@ -8,6 +8,11 @@ import re
 import json
 import urllib2
 
+def write_json(fname, data):
+    jf = open(fname, "w")
+    json.dump(data, jf, indent=4)
+    jf.close()
+
 def findkey(l, key):
     """Returns a list of all values with a given key"""
     ret = [];
@@ -47,8 +52,13 @@ else:
     url_with_tab="http://sports.betfair.com/football/event?id=" + options.event_id + "#tab-score"
     if options.verbose:
         logging.info("fetching data from url: %s" % url_with_tab)
-        # get file from the web
-    response = urllib2.urlopen(url_with_tab)
+    # get file from the web
+    opener = urllib2.build_opener()
+    # TimeZone: Europe, Berlin
+    # Region: GBR
+    # Locale: en
+    opener.addheaders.append(('Cookie', r'betexPtk=betexTimeZone%3DEurope%2FBerlin%7EbetexRegion%3DGBR%7EbetexLocale%3Den'))
+    response = opener.open(url_with_tab)
     file_as_string = response.read()
     # create work directory if it does not exist
     if not os.path.exists("work"):
@@ -69,19 +79,21 @@ def key_and_val(di, key, val):
     else:
         return False
 # remove some garbage from the end of the string
-# TODO: replace by more robust implementation
+# TODO: replace by more robust solution
 json_string = json_string[:-41]
 
 json_data = json.loads(json_string)
+json_file=os.path.join("work", "json-full." + options.event_id + ".js")
+write_json(json_file, json_data)
+
 # keep only relevant part of the json
+data =  findkey(json_data, "matchStatus")
 json_data = json_data["page"]["config"]["marketData"]
 names = findkey(json_data, "eventName")
-print names[0]
+print names[0], "(%s)" % data[0]
 json_data = filter(lambda el : key_and_val(el, "marketType", "CORRECT_SCORE"), json_data);
 json_file=os.path.join("work", "json." + options.event_id + ".js")
-jf = open(json_file, "w")
-json.dump(json_data, jf, indent=4)
-jf.close()
+write_json(json_file, json_data)
 logging.info("json file: " + json_file + " was created")
 
 scoreset={\
@@ -181,6 +193,4 @@ if options.verbose:
 else:
     for t in wintable[-3:]:
         print "%.3f %i %i" % t
-
-
 logging.shutdown()
