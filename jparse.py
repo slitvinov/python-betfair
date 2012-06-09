@@ -29,6 +29,9 @@ else:
         # get file from the web
     response = urllib2.urlopen(url_with_tab)
     file_as_string = response.read()
+    # create work directory if it does not exist
+    if not os.path.exists("work"):
+        os.makedirs("work")
     f = open(cache_file, "w")
     f.write(file_as_string)
     f.close()
