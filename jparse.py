@@ -1,5 +1,5 @@
 #! /usr/bin/python
-
+import logging
 import os.path
 from optparse import OptionParser
 import re
@@ -7,7 +7,6 @@ import json
 import urllib2
 
 parser = OptionParser()
-
 # event ID Portugal - Niederlande
 parser.add_option("-i", "--id", dest="event_id",
                   help="event ID, default: is 26818281 (Portugal - Niederlande)", metavar="ID", default="26818281")
@@ -15,17 +14,23 @@ parser.add_option("-v", "--verbose",
                       action="store_true", dest="verbose", default=False)
 (options, args) = parser.parse_args()
 
+if options.verbose:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.WARNING)
+
+
 # check if the web page is in a cache
 cache_file=os.path.join("work", "webpage." + options.event_id)
 if os.path.exists(cache_file):
-    print "using a cache file: " + cache_file
+    logging.info("using a cache file: " + cache_file)
     f = open(cache_file, "r")
     file_as_string = f.read()
     f.close()
 else:
     url_with_tab="http://sports.betfair.com/football/event?id=" + options.event_id + "#tab-score"
     if options.verbose:
-        print "fetching data from url: %s" % url_with_tab
+        logging.info("fetching data from url: %s" % url_with_tab)
         # get file from the web
     response = urllib2.urlopen(url_with_tab)
     file_as_string = response.read()
@@ -35,7 +40,7 @@ else:
     f = open(cache_file, "w")
     f.write(file_as_string)
     f.close()
-    print "cache file: " + cache_file + " was created"
+    logging.info("cache file: " + cache_file + " was created")
 
 restr = "platformConfig = "
 # we split the text add take the second part
@@ -151,5 +156,13 @@ def getexpwin(odds):
 # sort and print result
 print "<expected point number>, <bet score 1>, <bet score 2>"
 wintable = getexpwin(odds)
-for t in wintable[-3:]:
-    print "%.3f %i %i" % t
+
+if options.verbose:
+    for t in wintable:
+        print "%.3f %i %i" % t
+else:
+    for t in wintable[-3:]:
+        print "%.3f %i %i" % t
+
+
+logging.shutdown()
