@@ -1,10 +1,26 @@
 #! /usr/bin/python
+import sys
+import pprint
 import logging
 import os.path
 from optparse import OptionParser
 import re
 import json
 import urllib2
+
+def findkey(l, key):
+    """Returns a list of all values with a given key"""
+    ret = [];
+    def findkey_(l):
+        if type(l)==list:
+            map(findkey_, l)
+        elif type(l)==dict:
+            if key in l:
+                ret.append(l[key])
+            map(findkey_, l.values())
+    findkey_(l)
+    return ret
+
 
 parser = OptionParser()
 # event ID Portugal - Niederlande
@@ -46,11 +62,27 @@ restr = "platformConfig = "
 # we split the text add take the second part
 json_string = re.split(restr, file_as_string)[1]
 
+def key_and_val(di, key, val):
+    if (key in di):
+        if di[key]==val:
+            return True
+    else:
+        return False
 # remove some garbage from the end of the string
 # TODO: replace by more robust implementation
 json_string = json_string[:-41]
 
 json_data = json.loads(json_string)
+# keep only relevant part of the json
+json_data = json_data["page"]["config"]["marketData"]
+names = findkey(json_data, "eventName")
+print names[0]
+json_data = filter(lambda el : key_and_val(el, "marketType", "CORRECT_SCORE"), json_data);
+json_file=os.path.join("work", "json." + options.event_id + ".js")
+jf = open(json_file, "w")
+json.dump(json_data, jf, indent=4)
+jf.close()
+logging.info("json file: " + json_file + " was created")
 
 scoreset={\
 "0 - 0", \
@@ -72,20 +104,6 @@ scoreset={\
 
 odds = [[0.0 for x in xrange(4)] for x in xrange(4)] 
 
-def findkey(l, key):
-    """Returns a list of all values with a given key"""
-    ret = [];
-    def findkey_(l):
-        if type(l)==list:
-            map(findkey_, l)
-        elif type(l)==dict:
-            if key in l:
-                ret.append(l[key])
-            map(findkey_, l.values())
-    findkey_(l)
-    return ret
-
-print findkey(json_data, "eventName")[0]
                 
 def walker(l):
     """Collect odds from json tree"""
