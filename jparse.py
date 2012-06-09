@@ -8,6 +8,13 @@ import re
 import json
 import urllib2
 
+def key_and_val(di, key, val):
+    if (key in di):
+        if di[key]==val:
+            return True
+    else:
+        return False
+
 def write_json(fname, data):
     jf = open(fname, "w")
     json.dump(data, jf, indent=4)
@@ -26,6 +33,19 @@ def findkey(l, key):
     findkey_(l)
     return ret
 
+def findDict(l, key, val):
+    """Returns a list of all values with a given key"""
+    ret = [];
+    def findDict_(l):
+        if type(l)==list:
+            map(findDict_, l)
+        elif type(l)==dict:
+            if key_and_val(l, key, val):
+                ret.append(l)
+            map(findDict_, l.values())
+    findDict_(l)
+    return ret
+
 
 parser = OptionParser()
 # event ID Portugal - Niederlande
@@ -42,6 +62,7 @@ else:
 
 
 # check if the web page is in a cache
+url_with_tab="http://sports.betfair.com/football/event?id=" + options.event_id + "#tab-score"
 cache_file=os.path.join("work", "webpage." + options.event_id)
 if os.path.exists(cache_file):
     logging.info("using a cache file: " + cache_file)
@@ -49,7 +70,6 @@ if os.path.exists(cache_file):
     file_as_string = f.read()
     f.close()
 else:
-    url_with_tab="http://sports.betfair.com/football/event?id=" + options.event_id + "#tab-score"
     if options.verbose:
         logging.info("fetching data from url: %s" % url_with_tab)
     # get file from the web
@@ -72,12 +92,6 @@ restr = "platformConfig = "
 # we split the text add take the second part
 json_string = re.split(restr, file_as_string)[1]
 
-def key_and_val(di, key, val):
-    if (key in di):
-        if di[key]==val:
-            return True
-    else:
-        return False
 # remove some garbage from the end of the string
 # TODO: replace by more robust solution
 json_string = json_string[:-41]
@@ -88,9 +102,18 @@ write_json(json_file, json_data)
 
 # keep only relevant part of the json
 data =  findkey(json_data, "matchStatus")
+cdict = findDict(json_data, "eventId", options.event_id)
+names = findkey(cdict, "eventName")
 json_data = json_data["page"]["config"]["marketData"]
-names = findkey(json_data, "eventName")
-print names[0], "(%s)" % data[0]
+try:
+    print names[0], "(%s)" % data[0]
+except:
+    print data[0]
+
+
+if options.verbose:
+    print "id: %s" % options.event_id
+    print "url: %s" % url_with_tab
 json_data = filter(lambda el : key_and_val(el, "marketType", "CORRECT_SCORE"), json_data);
 json_file=os.path.join("work", "json." + options.event_id + ".js")
 write_json(json_file, json_data)
@@ -114,8 +137,8 @@ scoreset={\
 "3 - 2", \
 "3 - 3"}
 
-odds = [[0.0 for x in xrange(4)] for x in xrange(4)] 
-
+odds = [[0.0 for x in xrange(4)] for x in xrange(4)]
+prob = [[0.0 for x in xrange(4)] for x in xrange(4)]
                 
 def walker(l):
     """Collect odds from json tree"""
@@ -138,6 +161,15 @@ def walker(l):
 # fill odds with data
 walker(json_data)
 
+s = 0.0
+for idx1, col in enumerate(odds):
+    for idx2, val in enumerate(col):
+        prob[idx1][idx2] = 2.0/odds[idx1][idx2]
+        s+=prob[idx1][idx2]
+
+for idx1, col in enumerate(odds):
+    for idx2, val in enumerate(col):
+        prob[idx1][idx2] /= s
 
 if options.verbose:
     print "===Correct score (back)==="
@@ -175,12 +207,19 @@ def getexpwin(odds):
     for bet1 in xrange(4):
         for bet2 in xrange(4):
             win=0.0
+            pout=""
             for res1 in xrange(4):
                 for res2 in xrange(4):
                     np = npoint(res1, res2, bet1, bet2)
-                    p = 2.0/odds[res1][res2]
+                    p = prob[res1][res2]
                     win = win + p*np
-            expwin.append( (win, bet1, bet2) )
+                    if np>0 and len(pout)>0:
+                        pout = pout + "+"
+                    if np==1:
+                        pout = pout + ("%.2f[%i %i]" % (p, res1, res2))
+                    elif np>1:
+                        pout = pout + ("%i*%.2f[%i %i]" % (np, p, res1, res2))
+            expwin.append( (win, bet1, bet2, pout) )
     return sorted(expwin)
 
 # sort and print result
@@ -189,8 +228,8 @@ wintable = getexpwin(odds)
 
 if options.verbose:
     for t in wintable:
-        print "%.3f %i %i" % t
+        print "%.2f %i %i %s" % t
 else:
     for t in wintable[-3:]:
-        print "%.3f %i %i" % t
+        print "%.2f %i %i" % t[0:3]
 logging.shutdown()
