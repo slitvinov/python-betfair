@@ -8,5 +8,11 @@ set output sprintf("%s.svg", "$0")
 replot
 set output
 
+set terminal png
+set output sprintf("%s.png", "$0")
+replot
+set output
+
+
 set term pop
 replot
