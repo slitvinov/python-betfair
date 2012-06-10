@@ -110,9 +110,8 @@ try:
 except:
     print data[0]
 
-
+print "id: %s" % options.event_id
 if options.verbose:
-    print "id: %s" % options.event_id
     print "url: %s" % url_with_tab
 json_data = filter(lambda el : key_and_val(el, "marketType", "CORRECT_SCORE"), json_data);
 json_file=os.path.join("work", "json." + options.event_id + ".js")
@@ -230,6 +229,14 @@ if options.verbose:
     for t in wintable:
         print "%.2f %i %i %s" % t
 else:
-    for t in wintable[-3:]:
+    for t in wintable[-5:]:
         print "%.2f %i %i" % t[0:3]
+
+# save wintable to a file
+wintable_file = os.path.join("work", "wintable." + options.event_id + ".dat")
+f = open(wintable_file, "w");
+for t in wintable:
+    f.write( "%.2f %i %i\n" % t[0:3])
+logging.info("wintable file: " + wintable_file + " was created")
+f.close()
 logging.shutdown()
