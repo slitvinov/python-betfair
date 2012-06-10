@@ -4,9 +4,6 @@ import unittest
 
 class TestSequenceFunctions(unittest.TestCase):
 
-    def setUp(self):
-        self.seq = range(10)
-
     def test_npoints(self):
         self.assertEqual(jparse.npoint(2, 1, 1, 2), 0)
         self.assertEqual(jparse.npoint(2, 1, 1, 0), 2)
