@@ -123,6 +123,11 @@ def main():
     Parser.add_option("-i", "--id", dest="event_id",
                       help="event ID, default: 26818281 (Portugal - Niederlande)",
                       metavar="ID", default="26818281")
+    Parser.add_option("-n", "--number-show", dest="number_show",
+                      type=int,
+                      help="number of best results to show (default: 3)",
+                      metavar="N", default=3)
+
     Parser.add_option("-v", "--verbose",
                       action="store_true", dest="verbose", default=False)
     (options, args) = Parser.parse_args()
@@ -177,12 +182,14 @@ def main():
     data =  findkey(json_data, "matchStatus")
     cdict = finddict(json_data, "eventId", options.event_id)
     names = findkey(cdict, "eventName")
-    json_data = json_data["page"]["config"]["marketData"]
-    try:
+    if len(names)>0:
         print names[0], "(%s)" % data[0]
-    except:
-        print data[0]
+    else:
+        logging.warning("cannot find eventName, I will guess, look it up to be sure:\n %s" % url_with_tab)
+        names = [el[:-3] for el in findkey(json_data, "runnerName") if re.match(".*\+3$", el)]
+        print "%s v %s (%s)" % (names[0], names[1],  data[0])
 
+    json_data = json_data["page"]["config"]["marketData"]
     print "id: %s" % options.event_id
     if options.verbose:
         print "url: %s" % url_with_tab
@@ -220,7 +227,7 @@ def main():
         for t in wintable:
             print "%.2f %i %i %s" % t
     else:
-        for t in wintable[-5:]:
+        for t in wintable[-options.number_show:]:
             print "%.2f %i %i" % t[0:3]
 
     # save wintable to a file
