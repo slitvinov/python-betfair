@@ -92,6 +92,24 @@ def write_json(fname, data):
     json.dump(data, json_f, indent=4)
     json_f.close()
 
+def find_with_history(lst, key):
+    def find_with_history_(lst, hist):
+        local_hist=list(hist)
+        if type(lst)==list:
+            for n, el in enumerate(lst):
+                local_hist.append(i)
+                find_with_history_(el, local_hist)
+        elif type(lst)==dict:
+            if key in lst:
+                local_hist.append(key)
+                print local_hist
+            else:
+                for k, val in lst.iteritems():
+                    local_hist.append(k)
+                    find_with_history_(val, local_hist)
+    find_with_history_(lst, [])
+
+
 def findkey(lst, key):
     """Returns a list of all values with a given key"""
     ret = []
