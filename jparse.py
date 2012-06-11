@@ -193,6 +193,10 @@ def main():
     # remove some garbage from the end of the string
     json_string = re.sub(";[^;]*$", "", json_string)
 
+    json_string_file = os.path.join("work", "json-full." + options.event_id + ".tmp")
+    f = open(json_string_file, "w")
+    f.write(json_string)
+
     json_data = json.loads(json_string)
     json_file = os.path.join("work", "json-full." + options.event_id + ".js")
     write_json(json_file, json_data)
