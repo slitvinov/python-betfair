@@ -3,25 +3,25 @@
 set -e
 set -u
 
-# compitition URL for Euro2012
+# competition URL for Euro2012
 url=http://sports.betfair.com/football/competition?id=682772
 
 # make a directory for intermediate files
-WORK=work
-mkdir -p ${WORK}
+WORKDIR=work
+mkdir -p ${WORKDIR}
 
 # fetch a web page if it is not in a cache
-if [ ! -r "${WORK}/comp" ]; then
-    wget ${url} -O ${WORK}/comp
+if [ ! -r "${WORKDIR}/comp" ]; then
+    wget ${url} -O ${WORKDIR}/comp
 else
-    printf "using cache file: %s\n" ${WORK}/comp
+    printf "using cache file: %s\n" ${WORKDIR}/comp
 fi
 
-# get evnt IDs
-awk '/platformConfig = /{exit} 1' ${WORK}/comp  | \
+# get event IDs
+awk '/platformConfig = /{exit} 1' ${WORKDIR}/comp  | \
     grep 'data-eventid='  | \
     sed -e 's/\"//g' -e 's/data-eventid=//g' | \
-    awk '!s[$0]++'  > ${WORK}/event.ids
+    awk '!s[$0]++'  > ${WORKDIR}/event.ids
 
 # run jparse.py with all IDs in event.ids
-xargs < ${WORK}/event.ids -n 1 ./jparse.py --id
+xargs < ${WORKDIR}/event.ids -n 1 ./jparse.py --id
