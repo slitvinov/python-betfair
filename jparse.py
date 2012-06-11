@@ -171,8 +171,7 @@ def main():
     json_string = re.split(restr, file_as_string)[1]
 
     # remove some garbage from the end of the string
-    # TODO: replace by more robust solution
-    json_string = json_string[:-41]
+    json_string = re.sub(";[^;]*$", "", json_string)
 
     json_data = json.loads(json_string)
     json_file=os.path.join("work", "json-full." + options.event_id + ".js")
