@@ -153,6 +153,9 @@ def main():
     parser.add_option("-u", "--update",
                       help="do not use cache file",
                       action="store_true", dest="update", default=False)
+    parser.add_option("-w", "--work",
+                      help="work directory name",
+                      metavar="WORK", dest="workdir", default="work")
     (options, args) = parser.parse_args()
 
     if options.verbose:
@@ -162,7 +165,7 @@ def main():
 
     url_with_tab = "http://sports.betfair.com/football/event?id=" \
         + options.event_id + "#tab-score"
-    cache_file = os.path.join("work", "webpage." + options.event_id)
+    cache_file = os.path.join(options.workdir, "webpage." + options.event_id)
     # check if the web page is in a cache
     if not(options.update) and os.path.exists(cache_file):
         logging.info("using a cache file: " + cache_file)
@@ -182,8 +185,8 @@ def main():
         response = opener.open(url_with_tab)
         file_as_string = response.read()
         # create work directory if it does not exist
-        if not os.path.exists("work"):
-            os.makedirs("work")
+        if not os.path.exists(options.workdir):
+            os.makedirs(options.workdir)
         f = open(cache_file, "w")
         f.write(file_as_string)
         f.close()
@@ -196,12 +199,12 @@ def main():
     # remove some garbage from the end of the string
     json_string = re.sub(";[^;]*$", "", json_string)
 
-    json_string_file = os.path.join("work", "json-full." + options.event_id + ".tmp")
+    json_string_file = os.path.join(options.workdir, "json-full." + options.event_id + ".tmp")
     f = open(json_string_file, "w")
     f.write(json_string)
 
     json_data = json.loads(json_string)
-    json_file = os.path.join("work", "json-full." + options.event_id + ".js")
+    json_file = os.path.join(options.workdir, "json-full." + options.event_id + ".js")
     write_json(json_file, json_data)
 
     # keep only relevant part of the json
@@ -221,7 +224,7 @@ def main():
         print "url: %s" % url_with_tab
     #json_data = filter(lambda el : ,json_data)
     json_data = [el for el in json_data if key_and_val(el, "marketType","CORRECT_SCORE")]
-    json_file = os.path.join("work", "json." + options.event_id + ".js")
+    json_file = os.path.join(options.workdir, "json." + options.event_id + ".js")
     write_json(json_file, json_data)
     logging.info("json file: " + json_file + " was created")
 
@@ -258,7 +261,7 @@ def main():
             print "%.3f %i %i" % t[0:3]
 
     # save wintable to a file
-    wintable_file = os.path.join("work", "wintable." + options.event_id + ".dat")
+    wintable_file = os.path.join(options.workdir, "wintable." + options.event_id + ".dat")
     f = open(wintable_file, "w")
     for t in wintable:
         f.write( "%.2f %i %i\n" % t[0:3])
