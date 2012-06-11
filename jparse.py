@@ -147,9 +147,12 @@ def main():
                       type=int,
                       help="number of best results to show (default: 3)",
                       metavar="N", default=3)
-
     parser.add_option("-v", "--verbose",
+                      help="show verbose output",
                       action="store_true", dest="verbose", default=False)
+    parser.add_option("-u", "--update",
+                      help="do not use cache file",
+                      action="store_true", dest="update", default=False)
     (options, args) = parser.parse_args()
 
     if options.verbose:
@@ -161,7 +164,7 @@ def main():
         + options.event_id + "#tab-score"
     cache_file = os.path.join("work", "webpage." + options.event_id)
     # check if the web page is in a cache
-    if os.path.exists(cache_file):
+    if not(options.update) and os.path.exists(cache_file):
         logging.info("using a cache file: " + cache_file)
         f = open(cache_file, "r")
         file_as_string = f.read()
@@ -248,11 +251,11 @@ def main():
     if options.verbose:
         print "<expected point number>, <bet score 1>, <bet score 2>, <details>"
         for t in wintable[-options.number_show:]:
-            print "%.2f %i %i %s" % t
+            print "%.3f %i %i %s" % t
     else:
         print "<expected point number>, <bet score 1>, <bet score 2>"
         for t in wintable[-options.number_show:]:
-            print "%.2f %i %i" % t[0:3]
+            print "%.3f %i %i" % t[0:3]
 
     # save wintable to a file
     wintable_file = os.path.join("work", "wintable." + options.event_id + ".dat")
