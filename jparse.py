@@ -25,6 +25,9 @@ def npoint(res1, res2, bet1, bet2):
     elif ( (bet1>bet2) and (res1>res2) ):
 	# result is right
         return 1
+    elif ( (bet1<bet2) and (res1<res2) ):
+	# result is right
+        return 1
     else:
         return 0
 
