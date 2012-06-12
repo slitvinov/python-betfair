@@ -60,6 +60,16 @@ class TestSequenceFunctions(unittest.TestCase):
                                   [0.0, 0.0, 0.0, 2.0],
                                   [0.0, 0.0, 0.0, 0.0]])
 
+        prob = [[0.0 for x in xrange(4)] for x in xrange(4)]
+        prob[0][1]=0.5
+        prob[1][0]=0.5
+        wintbl = prob_to_tbl(prob)
+        self.assertEqual(wintbl, [[0.0, 1.5, 0.5, 0.5],
+                                  [1.5, 0.0, 1.0, 0.5],
+                                  [0.5, 1.0, 0.0, 1.0],
+                                  [0.5, 0.5, 1.0, 0.0]])
+
+
 
 if __name__ == '__main__':
     unittest.main()
