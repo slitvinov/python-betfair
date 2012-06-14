@@ -106,6 +106,31 @@ def walker(lst):
     walker_(lst)
     return odds
 
+def find_spread_odds(lst):
+    """Collect odds from json tree"""
+    odds = [0.0 for x in xrange(8)]
+    def find_spread_odds_(lst):
+        if type(lst)==list:
+            [find_spread_odds_(el) for el in lst]
+        elif type(lst)==dict:
+            if "marketType" in lst:
+                if lst["marketType"] == "HANDICAP":
+                    if "runners" in lst:
+                        rlist = lst["runners"]
+                        for runner_name in rlist:
+                            val = runner_name["runnerName"]
+                            if (val == "Draw") and ("prices" in runner_name):
+                                price = runner_name["prices"]["back"][0]["price"]
+                                mname = lst["marketName"]
+                                res1 = int(mname[-2:])
+                                print mname, res1
+                                #odds[res1] = price
+            for val in lst.values():
+                find_spread_odds_(val)
+    find_spread_odds_(lst)
+    return odds
+
+
 
 def key_and_val(dct, key, val):
     """true is dct[key]=val"""
@@ -258,16 +283,21 @@ def main():
         logging.warning("cannot find eventName, I will guess, look it up to be sure:\n %s" % url_with_tab)
         names = [el[:-3] for el in findkey(json_data, "runnerName") if re.match(".*\+3$", el)]
         print "%s v %s (%s)" % (names[0], names[1],  data[0])
-
+    
     json_data = json_data["page"]["config"]["marketData"]
     print "id: %s" % options.event_id
     if options.verbose:
         print "url: %s" % url_with_tab
     #json_data = filter(lambda el : ,json_data)
+    spread_odds = find_spread_odds(json_data)
+    print spread_odds
+
     json_data = [el for el in json_data if key_and_val(el, "marketType","CORRECT_SCORE")]
     json_file = os.path.join(options.workdir, "json." + options.event_id + ".js")
     write_json(json_file, json_data)
     logging.info("json file: " + json_file + " was created")
+
+
 
     odds = walker(json_data)
     prob = [[0.0 for x in xrange(4)] for x in xrange(4)]
@@ -275,7 +305,7 @@ def main():
     s = 0.0
     for idx1, col in enumerate(odds):
         for idx2, val in enumerate(col):
-            prob[idx1][idx2] = 2.0/odds[idx1][idx2]
+            prob[idx1][idx2] = 1.0/odds[idx1][idx2]
             s += prob[idx1][idx2]
 
     for idx1, col in enumerate(odds):
