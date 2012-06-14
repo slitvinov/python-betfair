@@ -4,14 +4,24 @@ import unittest
 
 class TestSequenceFunctions(unittest.TestCase):
 
-    def test_npoints(self):
-        self.assertEqual(jparse.npoint(2, 1, 1, 2), 0)
-        self.assertEqual(jparse.npoint(2, 1, 1, 0), 2)
-        self.assertEqual(jparse.npoint(1, 1, 0, 0), 1)
-        self.assertEqual(jparse.npoint(1, 2, 1, 2), 3)
-        self.assertEqual(jparse.npoint(0, 1, 0, 2), 1)
-        self.assertEqual(jparse.npoint(0, 1, 0, 3), 1)
-        self.assertEqual(jparse.npoint(0, 1, 1, 0), 0)
+    def test_npoints_aer(self):
+        self.assertEqual(jparse.npoint_aer(2, 1, 1, 2), 0)
+        self.assertEqual(jparse.npoint_aer(2, 1, 1, 0), 2)
+        self.assertEqual(jparse.npoint_aer(1, 1, 0, 0), 1)
+        self.assertEqual(jparse.npoint_aer(1, 2, 1, 2), 3)
+        self.assertEqual(jparse.npoint_aer(0, 1, 0, 2), 1)
+        self.assertEqual(jparse.npoint_aer(0, 1, 0, 3), 1)
+        self.assertEqual(jparse.npoint_aer(0, 1, 1, 0), 0)
+
+    def test_npoints_cse(self):
+        self.assertEqual(jparse.npoint_cse(2, 1, 1, 2), 0)
+        self.assertEqual(jparse.npoint_cse(2, 1, 1, 0), 3)
+        self.assertEqual(jparse.npoint_cse(1, 1, 0, 0), 2)
+        self.assertEqual(jparse.npoint_cse(1, 2, 1, 2), 4)
+        self.assertEqual(jparse.npoint_cse(0, 1, 0, 2), 2)
+        self.assertEqual(jparse.npoint_cse(0, 1, 0, 3), 2)
+        self.assertEqual(jparse.npoint_cse(0, 1, 1, 0), 0)
+
 
     def test_key_and_val(self):
         d = dict(a=10, b=42, c="b")
@@ -22,7 +32,7 @@ class TestSequenceFunctions(unittest.TestCase):
         
     def test_getexpwin(self):
         def prob_to_tbl(prob):
-            wt = jparse.getexpwin(prob)
+            wt = jparse.getexpwin(prob, jparse.npoint_aer)
             wintbl = [[0.0 for x in xrange(4)] for x in xrange(4)]
             for el in wt:
                 wintbl[el[1]][el[2]]=el[0]
