@@ -11,7 +11,7 @@ import urllib2
 #     Result: "2:1" - Bet: "1:0" -> 2 Points (win goal difference)
 #     Result: "1:1" - Bet: "0:0" -> 1 Points (draw tendency)
 #     Result: "1:2" - Bet: "1:2" -> 3 Points (win result)
-def npoint(res1, res2, bet1, bet2):
+def npoint_aer(res1, res2, bet1, bet2):
     """Returns a number of points"""
     if ( (bet1==res1) and (bet2==res2)):
 	# score is right
@@ -31,7 +31,33 @@ def npoint(res1, res2, bet1, bet2):
     else:
         return 0
 
-def getexpwin(prob):
+# For the rule "CSE", the following SCORES result:
+#     Result: "2:1" - Bet: "1:2" -> 0 Points (wrong tendency)
+#     Result: "2:1" - Bet: "1:0" -> 3 Points (win goal difference)
+#     Result: "1:1" - Bet: "0:0" -> 2 Points (draw tendency)
+#     Result: "1:2" - Bet: "1:2" -> 4 Points (win result)
+def npoint_cse(res1, res2, bet1, bet2):
+    """Returns a number of points"""
+    if ( (bet1==res1) and (bet2==res2)):
+	# score is right
+        return 4
+    elif ( (bet1==bet2) and (res1==res2) ):
+	# draw
+        return 2
+    elif (bet1-res1== bet2-res2):
+	# goal difference is right
+        return 3
+    elif ( (bet1>bet2) and (res1>res2) ):
+	# result is right
+        return 2
+    elif ( (bet1<bet2) and (res1<res2) ):
+	# result is right
+        return 2
+    else:
+        return 0
+
+
+def getexpwin(prob, npoint):
     """Returns a list of tupples (<expected win points>, 
     <bet score 1>, <bet_score 2>)"""
     expwin = []
@@ -159,12 +185,24 @@ def main():
     parser.add_option("-w", "--work",
                       help="work directory name",
                       metavar="WORK", dest="workdir", default="work")
+    parser.add_option("-r", "--rules",
+                      type='choice',
+                      choices=['aer', 'cse'],
+                      help="rules, possible values are 'aer' (default), 'cse'",
+                      metavar="RULES", dest="rules", default="aer")
     (options, args) = parser.parse_args()
 
     if options.verbose:
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.WARNING)
+
+    if options.rules == "aer":
+        npoint = npoint_aer
+        logging.info("using a aer rules")
+    else:
+        npoint= npoint_cse
+        logging.info("using a cse rules")
 
     url_with_tab = "http://sports.betfair.com/football/event?id=" \
         + options.event_id + "#tab-score"
@@ -252,7 +290,7 @@ def main():
         print "====================="
 
     # sort and print result
-    wintable = getexpwin(prob)
+    wintable = getexpwin(prob, npoint)
 
     if options.verbose:
         print "<expected point number>, <bet score 1>, <bet score 2>, <details>"
