@@ -106,60 +106,6 @@ def walker(lst):
     walker_(lst)
     return odds
 
-def find_spread_odds(lst, team_name1, team_name2):
-    """Collect odds from json tree"""
-    # team number (0, 1), handicap (+1, +2, +3)
-    odds = [[0.0 for x in xrange(4)] for x in xrange(3)]
-    def find_spread_odds_(lst):
-        if type(lst)==list:
-            [find_spread_odds_(el) for el in lst]
-        elif type(lst)==dict:
-            if "marketType" in lst:
-                if lst["marketType"] == "HANDICAP":
-                    if "runners" in lst:
-                        rlist = lst["runners"]
-                        for runner_name in rlist:
-                            val = runner_name["runnerName"]
-                            if (val == "Draw") and ("prices" in runner_name):
-                                price = runner_name["prices"]["back"][0]["price"]
-                                mname = lst["marketName"]
-                                res1 = int(mname[-2:])
-                                if re.match(team_name1, mname):
-                                    odds[1][res1]=price
-                                else:
-                                    odds[2][res1]=price
-                                    
-            for val in lst.values():
-                find_spread_odds_(val)
-    find_spread_odds_(lst)
-    return odds
-
-def find_match_odds(lst, team_name1, team_name2):
-    """Collect odds from json tree"""
-    # team number (0, 1), handicap (+1, +2, +3)
-    odds = [0.0 for x in xrange(4)]
-    def find_match_odds_(lst):
-        if type(lst)==list:
-            [find_match_odds_(el) for el in lst]
-        elif type(lst)==dict:
-            if key_and_val(lst, "marketType", "MATCH_ODDS") and key_and_val(lst, "marketName", "Match Odds"):
-                if "runners" in lst:
-                    rlist = lst["runners"]
-                    for runner_name in rlist:
-                        val = runner_name["runnerName"]
-                        print val
-                        if (val == "Draw") and ("prices" in runner_name):
-                            price = runner_name["prices"]["back"][0]["price"]
-                            ods[1] = price
-                            print "Draw: ", price
-            for val in lst.values():
-                find_match_odds_(val)
-    find_match_odds_(lst)
-    return odds
-
-
-
-
 def key_and_val(dct, key, val):
     """true is dct[key]=val"""
     if (key in dct):
@@ -317,22 +263,6 @@ def main():
     print "id: %s" % options.event_id
     if options.verbose:
         print "url: %s" % url_with_tab
-    #json_data = filter(lambda el : ,json_data)
-    spread_odds = find_spread_odds(json_data, names[0], names[1])
-    print "===Spread odds==="
-    for idx1, col in enumerate(spread_odds):
-        for idx2, val in enumerate(col):
-            if (idx1>0) & (idx2>0):
-                print "%s +%i %.3f" % (names[idx1-1],  idx2, val)
-    print "================="
-
-    match_odds = find_match_odds(json_data, names[0], names[1])
-    print "===Match odds==="
-    for idx1, val in enumerate(match_odds):
-        print "%s +%i %.3f" % (names[idx1],  idx1, val)
-    print "================="
-
-    
 
     json_data = [el for el in json_data if key_and_val(el, "marketType","CORRECT_SCORE")]
     json_file = os.path.join(options.workdir, "json." + options.event_id + ".js")
