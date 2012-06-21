@@ -1,11 +1,11 @@
 /*
-   P_1_extra: team 1 wins in extra time
-   P_0_0: 0:0 in 90 minutes
-   P_1_1: 1:1 in 90 minutes
+   P_1_extra: team 1 wins in extra time (betfair)
+   P_0_0: 0:0 in 90 minutes (betfair)
+   P_1_1: 1:1 in 90 minutes (betfair)
    P_1_scores: team 1 scores in extra times (assume it is the same for 0:0 and 1:0)
 */
 
-/* assume the onlye way to win in extra time is
+/* assume the only way to win in extra time is
    0:0 and team one scores only ones
    1:1 and team one scores only ones
    2:2 and team one scores only ones
