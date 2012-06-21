@@ -1,17 +1,29 @@
-/* P_1_extra: team 1 wins in extra time
+/*
+   P_1_extra: team 1 wins in extra time
    P_0_0: 0:0 in 90 minutes
    P_1_1: 1:1 in 90 minutes
    P_1_scores: team 1 scores in extra times (assume it is the same for 0:0 and 1:0)
 */
 
-eq1: P_1_extra = P_0_0 * P_1_scores + P_1_1 * P_1_scores;
+/* assume the onlye way to win in extra time is
+   0:0 and team one scores only ones
+   1:1 and team one scores only ones
+   2:2 and team one scores only ones
+*/   
+eq1: P_1_extra = P_0_0 * P_1_scores + P_1_1 * P_1_scores + P_2_2 * P_1_scores;
 
 P_1_scores_expr: solve(eq1, P_1_scores)[1];
 
 points_1_0: P_0_0 * P_1_scores;
 points_2_1: P_1_1 * P_1_scores;
 
-env: [P_1_extra=1/10.5, P_0_0=1/10.0, P_1_1=1/8.2];
+env_90_min: [P_0_0=1/10.0, P_1_1=1/8.2, P_2_2=1/24.0];
+
+/* Portugal */
+env: cons(P_1_extra=1/10.5, env_90_min);
+
+/* Czech Republic */
+/* env: cons(P_1_extra=1/24, env_90_min); */
 
 /* the difference in points between 1:0 and 2:1 */
 ev(subst(sol, points_1_0), env) - ev(subst(sol, points_2_1), env);
