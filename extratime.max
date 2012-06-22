@@ -2,27 +2,25 @@
    P_1_extra: team 1 wins in extra time (betfair)
    P_0_0: 0:0 in 90 minutes (betfair)
    P_1_1: 1:1 in 90 minutes (betfair)
-   P_1_scores: team 1 scores in extra times (assume it is the same for 0:0 and 1:0)
+   P_1_scores: team 1 scores in extra times (assume it is the same for 0:0, 1:1, and 2:2)
+   P_2_scores: team 2 scores in extra times (assume it is the same for 0:0, 1:1, and 2:2)
 */
 
 /* assume the only way to win in extra time is
-   0:0 and team one scores only ones
-   1:1 and team one scores only ones
-   2:2 and team one scores only ones
+   0:0 and team 1 scores ones and team 2 does not score
+   1:1 and team 1 scores ones and team 2 does not score 
+   2:2 and team 1 scores ones and team 2 does not score
 */   
-eq1: P_1_extra = P_0_0 * P_1_scores + P_1_1 * P_1_scores + P_2_2 * P_1_scores;
-P_1_scores_expr: solve(eq1, P_1_scores)[1];
+eq1: P_1_extra = P_0_0*P_1_scores*(1 - P_2_scores) + P_1_1*P_1_scores*(1 - P_2_scores) + P_2_2 * P_1_scores*(1 - P_2_scores);
+eq2: P_2_extra = P_0_0*P_2_scores*(1 - P_1_scores) + P_1_1*P_2_scores*(1 - P_1_scores) + P_2_2 * P_2_scores*(1 - P_1_scores);
+
+sol: solve([eq1, eq2], [P_1_scores, P_2_scores])[1];
 
 points_1_0: P_0_0 * P_1_scores;
 points_2_1: P_1_1 * P_1_scores;
 
-env_90_min: [P_0_0=1/10.0, P_1_1=1/8.2, P_2_2=1/24.0];
+env: [P_0_0=1/10.0, P_1_1=1/8.2, P_2_2=1/24.0, P_1_extra=1/10.5, P_2_extra=1/24];
 
-/* Portugal */
-/* env: cons(P_1_extra=1/10.5, env_90_min); */
-
-/* Czech Republic */
-env: cons(P_1_extra=1/24, env_90_min);
 
 /* the difference in points between 1:0 and 2:1 */
-ev(subst(P_1_scores_expr, points_1_0), env) - ev(subst(P_1_scores_expr, points_2_1), env);
+ev(subst(sol, points_1_0), env) - ev(subst(sol, points_2_1), env);
