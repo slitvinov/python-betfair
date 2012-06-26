@@ -19,8 +19,8 @@ sol: solve([eq1, eq2], [P_1_scores, P_2_scores])[1];
 points_1_0: P_0_0 * P_1_scores;
 points_2_1: P_1_1 * P_1_scores;
 
+/* Czech Republic v Portugal */
 env: [P_0_0=1/10.0, P_1_1=1/8.2, P_2_2=1/24.0, P_1_extra=1/10.5, P_2_extra=1/24];
-
 
 /* the difference in points between 1:0 and 2:1 */
 ev(subst(sol, points_1_0), env) - ev(subst(sol, points_2_1), env);
