@@ -24,3 +24,6 @@ To get verbose output:
 Correct score (back) must be the same as here
 
 http://sports.betfair.com/football/event?id=26818281#tab-score
+
+Kicktipp table format (8 columns):
+pos, +/-, name, game1, game2, Pts, Wins, Tot
