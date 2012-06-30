@@ -57,28 +57,6 @@ def npoint_cse(res1, res2, bet1, bet2):
         return 0
 
 
-def getexpwin(prob, npoint):
-    """Returns a list of tupples (<expected win points>, 
-    <bet score 1>, <bet_score 2>)"""
-    expwin = []
-    for bet1 in xrange(4):
-        for bet2 in xrange(4):
-            win = 0.0
-            pout = ""
-            for res1 in xrange(4):
-                for res2 in xrange(4):
-                    number_point = npoint(res1, res2, bet1, bet2)
-                    probability = prob[res1][res2]
-                    win = win + probability*number_point
-                    if number_point > 0 and len(pout)>0:
-                        pout = pout + "+"
-                    if number_point == 1:
-                        pout = pout + ("%.2f[%i %i]" % (probability, res1, res2))
-                    elif number_point > 1:
-                        pout = pout + ("%i*%.2f[%i %i]" % (number_point, probability, res1, res2))
-            expwin.append( (win, bet1, bet2, pout) )
-    return sorted(expwin)
-
 def walker(lst):
     """Collect odds from json tree"""
     SCORESET = frozenset({"0 - 0", "0 - 1", "0 - 2", "0 - 3",
@@ -323,7 +301,7 @@ def main():
         for your_bet2 in xrange(4):
             wpoints = 0.0
             for (his_bet1, his_bet2, w) in his_bet_list:
-                wpoints = wpoints + getexpwin(prob, npoint, (your_bet1, your_bet2), (his_bet1, his_bet2))
+                wpoints = wpoints + w*getexpwin(prob, npoint, (your_bet1, your_bet2), (his_bet1, his_bet2))
                 wintable.append( (wpoints, your_bet1, your_bet2) )
     wintable = sorted(wintable)
 
