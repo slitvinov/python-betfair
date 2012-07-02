@@ -22,7 +22,7 @@ if (typeof inFIF != "undefined") {
 	__theDocument = parent.document;
 	__theWindow = parent;
 }
-document.write("<img src=\"http://aka-cdn-ns.adtech.de/apps/10/Ad6778378St3Sz16Sq101107026V1Id25/msBlocker.gif\" width=\"1\" height=\"1\" border=\"0\">\n");
+document.write("<img src=\"http://aka-cdn-ns.adtech.de/apps/10/Ad6778378St3Sz1964Sq101107028V1Id19/msBlocker.gif\" width=\"1\" height=\"1\" border=\"0\">\n");
 function cleanUp() {
 	if (typeof __parent.swappedRefs == "undefined") {
 		__parent.swappedRefs = new Array();
