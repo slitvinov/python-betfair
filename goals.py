@@ -24,6 +24,7 @@ dens=[0 for x in xrange(npart)]
 
 for t in times:
     idx=int(t*(npart/90.0 - eps) )
+    # in the data file goals are listed two time
     dens[idx]=dens[idx] + 0.5
 
 print dens
