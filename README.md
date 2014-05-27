@@ -9,18 +9,18 @@ Run
 
 to process all events on this page
 
-http://sports.betfair.com/football/competition?id=682772
+http://www.betfair.com/exchange/football/competition?id=67646
 
 Run
 
-./jparse.py --id 26818281
+./jparse.py --id 27113604
 
-to process "Portugal - Niederlande" game
+to process "Japan v Colombia" game
 
 To get verbose output:
 
-./jparse.py --id 26818281 -v
+./jparse.py --id 27113604 -v
 
 Correct score (back) must be the same as here
 
-http://sports.betfair.com/football/event?id=26818281#tab-score
+http://www.betfair.com/exchange/football/event?id=27113604

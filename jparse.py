@@ -168,9 +168,9 @@ def main():
     parser = OptionParser()
     # event ID Portugal - Niederlande
     parser.add_option("-i", "--id", dest="event_id",
-                      help="event ID, default: 26818281"
-                           " (Portugal v Netherlands)",
-                      metavar="ID", default="26818281")
+                      help="event ID, default: 27113604"
+                           " (Japan v Colombia)",
+                      metavar="ID", default="27113604")
     parser.add_option("-n", "--number-show", dest="number_show",
                       type=int,
                       help="number of best results to show (default: 3)",
