@@ -198,10 +198,10 @@ def main():
 
     if options.rules == "aer":
         npoint = npoint_aer
-        logging.info("using a aer rules")
+        logging.info("using aer rules")
     else:
         npoint= npoint_cse
-        logging.info("using a cse rules")
+        logging.info("using cse rules")
 
     url_with_tab = "http://www.betfair.com/exchange/football/event?id=" \
         + options.event_id + "#tab-score"
