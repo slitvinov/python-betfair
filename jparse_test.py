@@ -20,6 +20,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(jparse.npoint_cse(1, 2, 1, 2), 4)
         self.assertEqual(jparse.npoint_cse(0, 1, 0, 2), 2)
         self.assertEqual(jparse.npoint_cse(0, 1, 0, 3), 2)
+        self.assertEqual(jparse.npoint_cse(0, 1, 0, 4), 2)
         self.assertEqual(jparse.npoint_cse(0, 1, 1, 0), 0)
 
 
