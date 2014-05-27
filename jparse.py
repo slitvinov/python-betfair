@@ -203,7 +203,7 @@ def main():
         npoint= npoint_cse
         logging.info("using a cse rules")
 
-    url_with_tab = "http://sports.betfair.com/football/event?id=" \
+    url_with_tab = "http://www.betfair.com/exchange/football/event?id=" \
         + options.event_id + "#tab-score"
     cache_file = os.path.join(options.workdir, "webpage." + options.event_id)
     # check if the web page is in a cache
