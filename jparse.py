@@ -13,20 +13,20 @@ import urllib2
 #     Result: "1:2" - Bet: "1:2" -> 3 Points (win result)
 def npoint_aer(res1, res2, bet1, bet2):
     """Returns a number of points"""
-    if ( (bet1==res1) and (bet2==res2)):
-	# score is right
-        return 3 
-    elif ( (bet1==bet2) and (res1==res2) ):
-	# draw
+    if (bet1==res1) and (bet2==res2):
+        # score is right
+        return 3
+    elif (bet1==bet2) and (res1==res2):
+        # draw
         return 1
-    elif (bet1-res1== bet2-res2):
-	# goal difference is right
+    elif bet1-res1== bet2-res2:
+        # goal difference is right
         return 2
-    elif ( (bet1>bet2) and (res1>res2) ):
-	# result is right
+    elif (bet1>bet2) and (res1>res2):
+        # result is right
         return 1
-    elif ( (bet1<bet2) and (res1<res2) ):
-	# result is right
+    elif (bet1<bet2) and (res1<res2):
+        # result is right
         return 1
     else:
         return 0
@@ -38,27 +38,27 @@ def npoint_aer(res1, res2, bet1, bet2):
 #     Result: "1:2" - Bet: "1:2" -> 4 Points (win result)
 def npoint_cse(res1, res2, bet1, bet2):
     """Returns a number of points"""
-    if ( (bet1==res1) and (bet2==res2)):
-	# score is right
+    if (bet1==res1) and (bet2==res2):
+        # score is right
         return 4
-    elif ( (bet1==bet2) and (res1==res2) ):
-	# draw
+    elif (bet1==bet2) and (res1==res2):
+        # draw
         return 2
-    elif (bet1-res1== bet2-res2):
-	# goal difference is right
+    elif bet1-res1== bet2-res2:
+        # goal difference is right
         return 3
-    elif ( (bet1>bet2) and (res1>res2) ):
-	# result is right
+    elif (bet1>bet2) and (res1>res2):
+        # result is right
         return 2
-    elif ( (bet1<bet2) and (res1<res2) ):
-	# result is right
+    elif (bet1<bet2) and (res1<res2):
+        # result is right
         return 2
     else:
         return 0
 
 
 def getexpwin(prob, npoint):
-    """Returns a list of tupples (<expected win points>, 
+    """Returns a list of tupples (<expected win points>,
     <bet score 1>, <bet_score 2>)"""
     expwin = []
     for bet1 in xrange(4):
@@ -70,7 +70,7 @@ def getexpwin(prob, npoint):
                     number_point = npoint(res1, res2, bet1, bet2)
                     probability = prob[res1][res2]
                     win = win + probability*number_point
-                    if number_point > 0 and len(pout)>0:
+                    if number_point>0 and len(pout)>0:
                         pout = pout + "+"
                     if number_point == 1:
                         pout = pout + ("%.2f[%i %i]" % (probability, res1, res2))
@@ -87,9 +87,9 @@ def walker(lst):
                 "3 - 0", "3 - 1", "3 - 2", "3 - 3"})
     odds = [[0.0 for x in xrange(4)] for x in xrange(4)]
     def walker_(lst):
-        if type(lst)==list:
+        if type(lst) == list:
             [walker_(el) for el in lst]
-        elif type(lst)==dict:
+        elif type(lst) == dict:
             if "marketType" in lst:
                 if lst["marketType"] == "CORRECT_SCORE":
                     if "runners" in lst:
@@ -200,7 +200,7 @@ def main():
         npoint = npoint_aer
         logging.info("using aer rules")
     else:
-        npoint= npoint_cse
+        npoint = npoint_cse
         logging.info("using cse rules")
 
     url_with_tab = "http://www.betfair.com/exchange/football/event?id=" \
@@ -258,7 +258,7 @@ def main():
         logging.warning("cannot find eventName, I will guess, look it up to be sure:\n %s" % url_with_tab)
         names = [el[:-3] for el in findkey(json_data, "runnerName") if re.match(".*\+3$", el)]
         print "%s v %s (%s)" % (names[0], names[1],  data[0])
-    
+
     json_data = json_data["page"]["config"]["marketData"]
     print "id: %s" % options.event_id
     if options.verbose:
@@ -314,4 +314,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
