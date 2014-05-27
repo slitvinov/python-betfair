@@ -2,7 +2,7 @@
 #+AUTHOR:	Litvinov Sergey
 #+EMAIL:	slitvinov@gmail.com
 
-Playing with betfair and kicktipp.de
+Playing with [[http://www.betfair.com][betfair]] and [[http://www.kicktipp.de/][kicktipp.de]]
 
 Run
 
@@ -29,7 +29,7 @@ Run
 : 0.670 3 0
 
 
-to process "Japan v Colombia" game
+to process [[http://www.betfair.com/exchange/football/event?id=27113604][Japan v Colombia]] game
 
 To get verbose output:
 
