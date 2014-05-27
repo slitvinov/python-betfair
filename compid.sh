@@ -3,8 +3,8 @@
 set -e
 set -u
 
-# competition URL for Euro2012
-url=http://sports.betfair.com/football/competition?id=682772
+# competition URL for WC2014
+url=http://www.betfair.com/exchange/football/competition?id=67646
 
 # make a directory for intermediate files
 WORKDIR=work
@@ -20,7 +20,8 @@ fi
 # get event IDs
 awk '/platformConfig = /{exit} 1' ${WORKDIR}/comp  | \
     grep 'data-eventid='  | \
-    sed -e 's/\"//g' -e 's/data-eventid=//g' | \
+    sed -e 's/.*data-eventid=\"//g' | \
+    sed -e 's/\".*//g' | \
     awk '!s[$0]++'  > ${WORKDIR}/event.ids
 
 # run jparse.py with all IDs in event.ids
