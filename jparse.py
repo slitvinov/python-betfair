@@ -233,7 +233,7 @@ def main():
         logging.info("cache file: " + cache_file + " was created")
 
     restr = "platformConfig = "
-    # we split the text add take the second part
+    # we split the text and take the second part
     json_string = re.split(restr, file_as_string)[1]
 
     # remove some garbage from the end of the string
@@ -288,20 +288,20 @@ def main():
         print "===Correct score (back)==="
         for idx1, col in enumerate(odds):
             for idx2, val in enumerate(col):
-                print idx1, idx2, val
+                print "[%i %i] %8.3f %8.3f" % (idx1, idx2, val, prob[idx1][idx2])
         print "====================="
 
     # sort and print result
     wintable = getexpwin(prob, npoint)
 
     if options.verbose:
-        print "<expected point number>, <bet score 1>, <bet score 2>, <details>"
-        for t in wintable[-options.number_show:]:
-            print "%.3f %i %i %s" % t
+        print "<expected point number> <score> <details>"
+        for t in sorted(wintable[-options.number_show:], reverse=True):
+            print "%22.3f    [%i %i] %s" % t
     else:
-        print "<expected point number>, <bet score 1>, <bet score 2>"
-        for t in wintable[-options.number_show:]:
-            print "%.3f %i %i" % t[0:3]
+        print "<expected point number> <score>"
+        for t in sorted(wintable[-options.number_show:], reverse=True):
+            print "%22.3f    [%i %i]" % t[0:3]
 
     # save wintable to a file
     wintable_file = os.path.join(options.workdir, "wintable." + options.event_id + ".dat")
