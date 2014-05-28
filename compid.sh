@@ -12,7 +12,7 @@ mkdir -p ${WORKDIR}
 
 # fetch a web page if it is not in a cache
 if [ ! -r "${WORKDIR}/comp" ]; then
-    wget ${url} -O ${WORKDIR}/comp
+    ftp ${url} -o ${WORKDIR}/comp
 else
     printf "using cache file: %s\n" ${WORKDIR}/comp
 fi
