@@ -187,8 +187,8 @@ def main():
     parser.add_option("-r", "--rules",
                       type='choice',
                       choices=['aer', 'cse'],
-                      help="rules, possible values are 'aer' (default), 'cse'",
-                      metavar="RULES", dest="rules", default="aer")
+                      help="rules, possible values are 'cse' (default), 'aer'",
+                      metavar="RULES", dest="rules", default="cse")
     (options, args) = parser.parse_args()
 
     if options.verbose:
