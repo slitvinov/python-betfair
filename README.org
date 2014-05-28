@@ -2,19 +2,24 @@
 #+AUTHOR:	Litvinov Sergey
 #+EMAIL:	slitvinov@gmail.com
 
+* Introduction
 Playing with [[http://www.betfair.com][betfair]] and [[http://www.kicktipp.de/][kicktipp.de]]
 
-Run
-
+* Install
 #+BEGIN_SRC sh
-./compid.sh
+git clone git://github.com/slitvinov/python-betfair.git
 #+END_SRC
 
-to process all events on this page
+ 	
+** Rulse
 
-[[http://www.betfair.com/exchange/football/competition?id=67646]]
+Rule of nine for games	
+|      | Tendency | Goal Difference | Result |
+| Win  |        2 | 3               |      4 |
+| Draw |        2 | -               |      4 |
 
-Run
+
+* Usage
 
 #+BEGIN_SRC sh :results verbatim
 ./jparse.py --id 27113604
@@ -69,3 +74,17 @@ url: http://www.betfair.com/exchange/football/event?id=27113604#tab-score
 Correct score (back) must be the same as here
 
 [[http://www.betfair.com/exchange/football/event?id=27113604]]
+
+To process all events on this page (2014 FIFA World Cup)
+
+[[http://www.betfair.com/exchange/football/competition?id=67646]]
+
+#+BEGIN_SRC sh
+./compid.sh
+#+END_SRC
+
+
+
+
+
+
