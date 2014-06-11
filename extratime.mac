@@ -1,7 +1,9 @@
 /*
    P_1_extra: team 1 wins in extra time (betfair)
+   P_2_extra: team 2 wins in extra time (betfair)
    P_0_0: 0:0 in 90 minutes (betfair)
    P_1_1: 1:1 in 90 minutes (betfair)
+   P_2_2: 2:2 in 90 minutes (betfair)
    P_1_scores: team 1 scores in extra times (assume it is the same for 0:0, 1:1, and 2:2)
    P_2_scores: team 2 scores in extra times (assume it is the same for 0:0, 1:1, and 2:2)
 */
@@ -20,7 +22,11 @@ points_1_0: P_0_0 * P_1_scores;
 points_2_1: P_1_1 * P_1_scores;
 
 /* Czech Republic v Portugal */
-env: [P_0_0=1/10.0, P_1_1=1/8.2, P_2_2=1/24.0, P_1_extra=1/10.5, P_2_extra=1/24];
+env: [P_0_0=1/10,
+      P_1_1=1/8.2,
+      P_2_2=1/24,
+      P_1_extra=1/10.5,
+      P_2_extra=1/24];
 
 /* the difference in points between 1:0 and 2:1 */
 ev(subst(sol, points_1_0), env) - ev(subst(sol, points_2_1), env);
