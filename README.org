@@ -3,13 +3,52 @@
 #+EMAIL:	slitvinov@gmail.com
 
 * Introduction
-Playing with [[http://www.betfair.com][betfair]] and [[http://www.kicktipp.de/][kicktipp.de]]
+This program grabs [[http://www.betfair.com][betfair]] prices for a "Correct score" betting and
+suggests optimal [[http://www.kicktipp.de/][kicktipp.de]] prediction.
+
+Consider this output:
+#+BEGIN_SRC sh :results verbatim
+./jparse.py --id 27113604 --work work_jun_11 -v
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Japan v Colombia (Tue 24 Jun 10PM)
+id: 27113604
+url: http://www.betfair.com/exchange/football/event?id=27113604#tab-score
+===Correct score (back)===
+[score] [betfair price] [score probability]
+  [0 0]           8.400               0.099
+  [0 1]           5.900               0.141
+  [0 2]           7.800               0.106
+  [0 3]          16.500               0.050
+  [1 0]           8.400               0.099
+  [1 1]           6.800               0.122
+  [1 2]           9.400               0.088
+  [1 3]          17.500               0.047
+  [2 0]          19.500               0.043
+  [2 1]          13.500               0.061
+  [2 2]          19.000               0.044
+  [2 3]          30.000               0.028
+  [3 0]          40.000               0.021
+  [3 1]          38.000               0.022
+  [3 2]          46.000               0.018
+  [3 3]          70.000               0.012
+=====================
+[expected point number] [predicted score] [details]
+                  1.318             [0 1] 4*0.14[0 1]+2*0.11[0 2]+2*0.05[0 3]+3*0.09[1 2]+2*0.05[1 3]+3*0.03[2 3]
+                  1.266             [1 2] 3*0.14[0 1]+2*0.11[0 2]+2*0.05[0 3]+4*0.09[1 2]+2*0.05[1 3]+3*0.03[2 3]
+                  1.205             [2 3] 3*0.14[0 1]+2*0.11[0 2]+2*0.05[0 3]+3*0.09[1 2]+2*0.05[1 3]+4*0.03[2 3]
+#+end_example
+We got the column =[betfair price]= from betfair. The prices were
+transformed to probability (=[score probability]= column should sum up
+to 1. =[expected point number]= for a given =[predicted score]= is
+calculated using those probabilities.
 
 * Install
 #+BEGIN_SRC sh
 git clone git://github.com/slitvinov/python-betfair.git
 #+END_SRC
-
  	
 ** Rules
 
@@ -28,58 +67,25 @@ Rule of nine for games
 #+RESULTS:
 : Japan v Colombia (Tue 24 Jun 10PM)
 : id: 27113604
-: <expected point number> <score>
-:                  1.009    [0 1]
-:                  1.004    [3 0]
-:                  0.996    [1 2]
+: [expected point number] [predicted score]
+:                   1.318             [0 1]
+:                   1.266             [1 2]
+:                   1.205             [2 3]
 
 
 to process [[http://www.betfair.com/exchange/football/event?id=27113604][Japan v Colombia]] game
 
 To get verbose output:
 
-#+BEGIN_SRC sh :results verbatim
+#+BEGIN_SRC sh :results verbatim :export code
 ./jparse.py --id 27113604 -v
 #+END_SRC
-
-#+RESULTS:
-#+begin_example
-Japan v Colombia (Tue 24 Jun 10PM)
-id: 27113604
-url: http://www.betfair.com/exchange/football/event?id=27113604#tab-score
-===Correct score (back)===
-[0 0]    2.200    0.168
-[0 1]    4.200    0.088
-[0 2]    4.900    0.075
-[0 3]    8.400    0.044
-[1 0]    5.400    0.068
-[1 1]    4.800    0.077
-[1 2]    4.900    0.075
-[1 3]    5.900    0.063
-[2 0]   16.500    0.022
-[2 1]    9.800    0.038
-[2 2]   10.500    0.035
-[2 3]   16.500    0.022
-[3 0]    2.200    0.168
-[3 1]   19.500    0.019
-[3 2]   19.500    0.019
-[3 3]   20.000    0.018
-=====================
-<expected point number> <score> <details>
-                 1.009    [0 1] 4*0.09[0 1]+2*0.08[0 2]+2*0.04[0 3]+3*0.08[1 2]+2*0.06[1 3]+3*0.02[2 3]
-                 1.004    [3 0] 2*0.07[1 0]+2*0.02[2 0]+2*0.04[2 1]+4*0.17[3 0]+2*0.02[3 1]+2*0.02[3 2]
-                 0.996    [1 2] 3*0.09[0 1]+2*0.08[0 2]+2*0.04[0 3]+4*0.08[1 2]+2*0.06[1 3]+3*0.02[2 3]
-#+end_example
-
-Correct score (back) must be the same as here
-
-[[http://www.betfair.com/exchange/football/event?id=27113604]]
 
 To process all events on this page (2014 FIFA World Cup)
 
 [[http://www.betfair.com/exchange/football/competition?id=67646]]
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :export code
 ./compid.sh
 #+END_SRC
 

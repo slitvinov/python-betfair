@@ -286,22 +286,23 @@ def main():
 
     if options.verbose:
         print "===Correct score (back)==="
+        print "%6s %9s %9s" % ("[score]", "[betfair price]", "[score probability]")
         for idx1, col in enumerate(odds):
             for idx2, val in enumerate(col):
-                print "[%i %i] %8.3f %8.3f" % (idx1, idx2, val, prob[idx1][idx2])
+                print "  [%i %i] %15.3f %19.3f" % (idx1, idx2, val, prob[idx1][idx2])
         print "====================="
 
     # sort and print result
     wintable = getexpwin(prob, npoint)
 
     if options.verbose:
-        print "<expected point number> <score> <details>"
+        print "[expected point number] [predicted score] [details]"
         for t in sorted(wintable[-options.number_show:], reverse=True):
-            print "%22.3f    [%i %i] %s" % t
+            print "%23.3f             [%i %i] %s" % t
     else:
-        print "<expected point number> <score>"
+        print "[expected point number] [predicted score]"
         for t in sorted(wintable[-options.number_show:], reverse=True):
-            print "%22.3f    [%i %i]" % t[0:3]
+            print "%23.3f             [%i %i]" % t[0:3]
 
     # save wintable to a file
     wintable_file = os.path.join(options.workdir, "wintable." + options.event_id + ".dat")
