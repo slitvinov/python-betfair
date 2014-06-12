@@ -41,8 +41,9 @@ url: http://www.betfair.com/exchange/football/event?id=27113604#tab-score
                   1.205             [2 3] 3*0.14[0 1]+2*0.11[0 2]+2*0.05[0 3]+3*0.09[1 2]+2*0.05[1 3]+4*0.03[2 3]
 #+end_example
 We got the column =[betfair price]= from betfair. The prices were
-transformed to probability (=[score probability]= column should sum up
-to 1. =[expected point number]= for a given =[predicted score]= is
+transformed to probabilities (=[score probability]=. 
+
+=[expected point number]= for a given =[predicted score]= is
 calculated using those probabilities.
 
 * Install
