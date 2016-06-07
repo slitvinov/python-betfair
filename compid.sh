@@ -4,7 +4,7 @@ set -e
 set -u
 
 # competition URL for WC2014
-url=http://www.betfair.com/exchange/football/competition?id=67646
+url=https://www.betfair.com/exchange/football/competition?id=4527196
 
 # make a directory for intermediate files
 WORKDIR=work
@@ -12,7 +12,7 @@ mkdir -p "${WORKDIR}"
 
 # fetch a web page if it is not in a cache
 if [ ! -r "${WORKDIR}/comp" ]; then
-    wget ${url} -O "${WORKDIR}/comp"
+    wget --no-check-certificate ${url} -O "${WORKDIR}/comp"
 else
     printf "using cache file: %s\n" "${WORKDIR}/comp"
 fi
